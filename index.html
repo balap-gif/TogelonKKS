@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Deteksi User ID Double</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://cdn.areabermain.club/assets/cdn/az8/2026/03/03/20260303/eb712bdd08f1d232edddcc419f56c78c/background-idul-fitri-togelon.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: rgba(227, 242, 253, 0.95);
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        .info-box strong {
+            color: #1976d2;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card h3 {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-card.warning {
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .stat-card.info {
+            border-left: 4px solid #4a90e2;
+        }
+
+        .paste-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d3748;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46a1 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #2f855a 100%);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169 0%, #276749 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f6ad55 0%, #dd6b20 100%);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #ed8936 0%, #c05621 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            transform: translateY(-2px);
+        }
+
+        .data-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .data-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-height: 600px;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .data-panel h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .data-panel h2 .badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(247, 250, 252, 0.95);
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky;
+            top: 60px;
+            z-index: 5;
+            backdrop-filter: blur(5px);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            font-size: 13px;
+            color: #2d3748;
+        }
+
+        tr:hover {
+            background: rgba(247, 250, 252, 0.8);
+        }
+
+        .sequential-duplicate {
+            background: rgba(255, 245, 245, 0.9);
+            border-left: 3px solid #fc8181;
+        }
+
+        .sequential-duplicate:hover {
+            background: rgba(254, 215, 215, 0.9);
+        }
+
+        .duplicate-group {
+            background: rgba(255, 250, 240, 0.9);
+            border-left: 3px solid #f6ad55;
+        }
+
+        .duplicate-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .group-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sequential-indicator {
+            color: #e53e3e;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .sequential-indicator:hover {
+            text-decoration: underline;
+        }
+
+        .highlight {
+            background-color: rgba(254, 252, 191, 0.9);
+            transition: background-color 0.3s ease;
+        }
+
+        .coin-value {
+            font-family: monospace;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d3748;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-box input::placeholder {
+            color: #718096;
+        }
+
+        .distance-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(247, 250, 252, 0.9);
+            border-radius: 8px;
+            color: #2d3748;
+        }
+
+        .distance-selector label {
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .distance-selector input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d3748;
+        }
+
+        .distance-selector input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .data-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Dashboard Deteksi User ID Double</h1>
+            <p>Tempelkan data Anda - Mendeteksi duplikasi yang berurutan/berdekatan saja</p>
+            <div class="info-box">
+                <strong>📌 Cara Kerja:</strong> Mendeteksi user ID yang sama muncul dalam jarak tertentu (default: 5 baris). 
+                User ID yang sama namun jauh jaraknya <strong>TIDAK</strong> dianggap duplicate.
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            <!-- Stats akan diisi oleh JavaScript -->
+        </div>
+
+        <div class="paste-section">
+            <textarea id="dataInput" placeholder="Tempelkan data Anda di sini&#10;Format: TO, BY, Coin&#10;Contoh:&#10;waduk78, vozaaqris1, 100000&#10;mariman51, vozaaqris1, 300000"></textarea>
+            
+            <div class="distance-selector">
+                <label for="maxDistance">Jarak maksimal antar duplikat (baris):</label>
+                <input type="number" id="maxDistance" min="1" max="20" value="5">
+                <button class="btn btn-info" onclick="processData()">🔄 Terapkan Jarak</button>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="processData()">🔍 Proses Data</button>
+                <button class="btn btn-success" onclick="downloadData()">📥 Download Data</button>
+                <button class="btn btn-warning" onclick="clearData()">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <div class="data-panel">
+                <h2>📋 Semua Data <span class="badge" id="totalData">0</span></h2>
+                <div class="search-box">
+                    <input type="text" id="searchAll" placeholder="Cari di semua data..." onkeyup="filterAllData()">
+                </div>
+                <div id="allDataTable">
+                    <!-- Tabel akan diisi oleh JavaScript -->
+                </div>
+            </div>
+
+            <div class="data-panel">
+                <h2>⚠️ User ID yang Double <span class="badge" id="sequentialCount">0</span></h2>
+                <div class="search-box">
+                    <input type="text" id="searchSequential" placeholder="Cari di data duplikat..." onkeyup="filterSequentialData()">
+                </div>
+                <div id="sequentialDataTable">
+                    <!-- Tabel akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalData = [];
+        let processedData = [];
+        let sequentialGroups = new Map(); // Grup duplikat berurutan
+        let maxDistance = 5; // Default jarak maksimal
+
+        function parseData(input) {
+            const lines = input.trim().split('\n');
+            const data = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line === '' || line.toLowerCase().includes('to') && line.toLowerCase().includes('by')) continue;
+                
+                // Split by comma or tab
+                const parts = line.split(/[,\t]+/).map(part => part.trim());
+                
+                if (parts.length >= 3) {
+                    const to = parts[0];
+                    const by = parts[1];
+                    // Remove commas from coin value and convert to number
+                    const coin = parseFloat(parts[2].replace(/,/g, '')) || 0;
+                    
+                    data.push({
+                        id: i,
+                        index: i,
+                        to: to,
+                        by: by,
+                        coin: coin,
+                        originalLine: line
+                    });
+                }
+            }
+            
+            return data;
+        }
+
+        function findSequentialDuplicates(data, maxDist) {
+            const groups = new Map();
+            const processed = new Set();
+            
+            for (let i = 0; i < data.length; i++) {
+                const current = data[i];
+                
+                // Lewati jika sudah diproses
+                if (processed.has(i)) continue;
+                
+                // Cari duplikat dalam jarak maxDist ke depan
+                const group = [current];
+                processed.add(i);
+                
+                for (let j = i + 1; j < data.length && j <= i + maxDist; j++) {
+                    if (data[j].to === current.to && !processed.has(j)) {
+                        group.push(data[j]);
+                        processed.add(j);
+                    }
+                }
+                
+                // Hanya simpan jika ada lebih dari 1 dalam group (duplikat)
+                if (group.length > 1) {
+                    groups.set(current.to + '_' + i, {
+                        to: current.to,
+                        startIndex: i,
+                        items: group,
+                        distance: group[group.length-1].index - group[0].index
+                    });
+                }
+            }
+            
+            return groups;
+        }
+
+        function formatCoin(coin) {
+            return new Intl.NumberFormat('id-ID').format(coin);
+        }
+
+        function updateStats() {
+            const totalEntries = processedData.length;
+            const totalUnique = new Set(processedData.map(item => item.to)).size;
+            
+            // Hitung total entry yang termasuk dalam duplikat berurutan
+            const sequentialEntries = new Set();
+            sequentialGroups.forEach(group => {
+                group.items.forEach(item => sequentialEntries.add(item.id));
+            });
+            
+            document.getElementById('totalData').textContent = totalEntries;
+            document.getElementById('sequentialCount').textContent = sequentialEntries.size;
+            
+            const statsHtml = `
+                <div class="stat-card">
+                    <h3>Total Entries</h3>
+                    <div class="value">${totalEntries}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Unique TO</h3>
+                    <div class="value">${totalUnique}</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>Duplikat Berurutan</h3>
+                    <div class="value">${sequentialEntries.size}</div>
+                </div>
+                <div class="stat-card info">
+                    <h3>Group Duplikat</h3>
+                    <div class="value">${sequentialGroups.size}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Coin</h3>
+                    <div class="value">${formatCoin(processedData.reduce((sum, item) => sum + item.coin, 0))}</div>
+                </div>
+            `;
+            
+            document.getElementById('stats').innerHTML = statsHtml;
+        }
+
+        function isInSequentialGroup(item) {
+            let found = false;
+            sequentialGroups.forEach(group => {
+                if (group.items.some(gItem => gItem.id === item.id)) {
+                    found = true;
+                }
+            });
+            return found;
+        }
+
+        function renderAllData(filterText = '') {
+            const filterLower = filterText.toLowerCase();
+            const filteredData = processedData.filter(item => 
+                item.to.toLowerCase().includes(filterLower) || 
+                item.by.toLowerCase().includes(filterLower) ||
+                item.coin.toString().includes(filterLower)
+            );
+            
+            let html = '<table>';
+            html += '<tr><th>No</th><th>TO</th><th>BY</th><th>Coin</th><th>Status</th></tr>';
+            
+            filteredData.forEach((item, idx) => {
+                const isSequential = isInSequentialGroup(item);
+                const rowClass = isSequential ? 'sequential-duplicate' : '';
+                
+                let statusHtml = '';
+                if (isSequential) {
+                    statusHtml = '<span class="duplicate-badge">⚠️ Duplikat Berurutan</span>';
+                } else {
+                    statusHtml = '<span style="color: #38a169; font-weight: 500;">✅ Unique</span>';
+                }
+                
+                html += `<tr class="${rowClass}" data-to="${item.to}" data-index="${item.index}">
+                    <td>${idx + 1}</td>
+                    <td><strong>${item.to}</strong></td>
+                    <td>${item.by}</td>
+                    <td class="coin-value">${formatCoin(item.coin)}</td>
+                    <td>${statusHtml}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            document.getElementById('allDataTable').innerHTML = html;
+        }
+
+        function renderSequentialData(filterText = '') {
+            const filterLower = filterText.toLowerCase();
+            
+            let html = '<table>';
+            html += '<tr><th>No</th><th>TO</th><th>BY</th><th>Coin</th><th>Group</th></tr>';
+            
+            let groupCounter = 1;
+            sequentialGroups.forEach((group, key) => {
+                if (group.to.toLowerCase().includes(filterLower)) {
+                    group.items.forEach((item, index) => {
+                        const groupInfo = index === 0 ? 
+                            `<span class="group-badge">Group ${groupCounter} (${group.items.length} entries, jarak ${group.distance} baris)</span>` : 
+                            '';
+                        
+                        html += `<tr class="sequential-duplicate" data-to="${item.to}" data-group="${key}">
+                            <td>${item.index + 1}</td>
+                            <td><strong>${item.to}</strong></td>
+                            <td>${item.by}</td>
+                            <td class="coin-value">${formatCoin(item.coin)}</td>
+                            <td>${groupInfo}</td>
+                        </tr>`;
+                    });
+                    groupCounter++;
+                }
+            });
+            
+            if (sequentialGroups.size === 0) {
+                html += '<tr><td colspan="5" style="text-align: center; padding: 30px; color: #4a5568;">✨ Tidak ada duplikat berurutan</td></tr>';
+            }
+            
+            html += '</table>';
+            document.getElementById('sequentialDataTable').innerHTML = html;
+        }
+
+        function processData() {
+            // Ambil jarak maksimal dari input
+            maxDistance = parseInt(document.getElementById('maxDistance').value) || 5;
+            
+            const input = document.getElementById('dataInput').value;
+            originalData = parseData(input);
+            processedData = [...originalData];
+            sequentialGroups = findSequentialDuplicates(processedData, maxDistance);
+            
+            updateStats();
+            renderAllData();
+            renderSequentialData();
+        }
+
+        function filterAllData() {
+            const filterText = document.getElementById('searchAll').value;
+            renderAllData(filterText);
+        }
+
+        function filterSequentialData() {
+            const filterText = document.getElementById('searchSequential').value;
+            renderSequentialData(filterText);
+        }
+
+        function downloadData() {
+            let csv = 'No,TO,BY,Coin,Status,Group\n';
+            
+            processedData.forEach((item, index) => {
+                const isSequential = isInSequentialGroup(item);
+                let status = 'UNIQUE';
+                let groupInfo = '';
+                
+                if (isSequential) {
+                    status = 'DUPLICATE_SEQUENTIAL';
+                    // Cari group info
+                    sequentialGroups.forEach((group, key) => {
+                        if (group.items.some(gItem => gItem.id === item.id)) {
+                            groupInfo = `Group_${group.to}_${group.startIndex}`;
+                        }
+                    });
+                }
+                
+                csv += `${index + 1},${item.to},${item.by},${item.coin},${status},${groupInfo}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_sequential_duplicates.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearData() {
+            document.getElementById('dataInput').value = '';
+            document.getElementById('searchAll').value = '';
+            document.getElementById('searchSequential').value = '';
+            document.getElementById('maxDistance').value = '5';
+            processedData = [];
+            sequentialGroups.clear();
+            updateStats();
+            renderAllData();
+            renderSequentialData();
+        }
+
+        // Load contoh data saat halaman dimuat
+        window.onload = function() {
+            processData();
+        };
+    </script>
+</body>
+</html>
